@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 15. Reading Practice Test</title>
+<style>
+:root{--fs:15px;--blue:#1e5bd8;--line:#d9d9d9;--red:#c8102e}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;font-family:Arial,Helvetica,sans-serif;color:#1d1d1d;background:#fff}
+button{font-family:inherit}
+#app{display:flex;flex-direction:column;height:100vh}
+/* ===== Header ===== */
+header.top{height:56px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid var(--line);background:#fff;gap:12px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand .badge{background:#1d1d1d;color:#fff;padding:5px 9px;border-radius:3px;font-size:12px;font-weight:700;letter-spacing:.6px}
+.brand .ttl{font-weight:700;font-size:15px;white-space:nowrap}
+.brand .cand{font-size:13px;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.timer{font-weight:700;font-size:15px;display:flex;align-items:center;gap:7px;white-space:nowrap}
+.timer.warn{color:var(--red)}
+.tools{display:flex;align-items:center;gap:8px}
+.tbtn{height:34px;padding:0 12px;border:1px solid #bdbdbd;background:#fff;border-radius:4px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:6px;color:#1d1d1d}
+.tbtn:hover{background:#f4f4f4}
+.tbtn.on{background:#fff4a8;border-color:#d8b800}
+.tbtn.primary{background:#1d1d1d;color:#fff;border-color:#1d1d1d}
+.tbtn.primary:hover{background:#333}
+/* ===== Part bar ===== */
+.partbar{flex:none;margin:10px 16px 0;background:#f1f2ec;border:1px solid #e1e2da;border-radius:4px;padding:10px 16px}
+.partbar b{display:block;font-size:15px;margin-bottom:2px}
+.partbar span{font-size:14px}
+/* ===== Main split ===== */
+main{flex:1;display:flex;min-height:0;margin:6px 8px 0}
+.pane{overflow:auto;padding:10px 22px 60px;font-size:var(--fs);line-height:1.7}
+#left{width:52%;flex:none}
+#right{flex:1;min-width:280px}
+.divider{width:16px;flex:none;position:relative;cursor:col-resize;user-select:none}
+.divider:before{content:'';position:absolute;left:7px;top:0;bottom:0;width:2px;background:#cfcfcf}
+.divider .grip{position:absolute;top:50%;left:-5px;width:26px;height:26px;border:1px solid #9a9a9a;border-radius:4px;background:#fff;transform:translateY(-50%);display:flex;align-items:center;justify-content:center}
+.passage h2{text-align:center;font-size:calc(var(--fs) + 9px);margin:6px 0 6px}
+.passage .sub{font-style:italic;margin:0 0 14px}
+.passage p{margin:0 0 16px;text-align:left}
+.passage .sec{font-weight:700;margin-right:4px}
+.passage .foot{font-size:calc(var(--fs) - 1px)}
+.part-block{display:none}
+.part-block.show{display:block}
+/* ===== Questions ===== */
+.qset{margin-bottom:34px}
+.qset h3{font-size:var(--fs);margin:0 0 10px}
+.qset .ins{margin:0 0 8px}
+.ins-i{font-style:italic}
+.keytbl{border-collapse:collapse;margin:6px 0 14px}
+.keytbl td{padding:3px 22px 3px 0;vertical-align:top}
+.keytbl td:first-child{font-weight:700;white-space:nowrap}
+.q{margin:0 0 20px;padding:4px 6px;border-radius:4px;transition:background .3s}
+.q .stem{margin:0 0 6px}
+.q .stem b{margin-right:6px}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:3px 8px;margin:2px 0;border-radius:4px;cursor:pointer;width:fit-content}
+.opt:hover{background:#f1f5fd}
+.opt input{margin:5px 0 0;width:16px;height:16px;accent-color:var(--blue);flex:none}
+.opt b{margin-right:6px}
+.flash{background:#e8f0ff !important}
+.notes{border:1px solid var(--line);border-radius:4px;padding:16px 22px}
+.notes h4{text-align:center;margin:0 0 12px;font-size:calc(var(--fs) + 1px)}
+.notes h5{font-size:var(--fs);margin:16px 0 6px}
+.notes ul{margin:0;padding-left:22px}
+.notes li{margin:0 0 12px}
+input.gap{font:inherit;font-size:calc(var(--fs) - 1px);width:170px;height:30px;border:1px solid #a9a9a9;border-radius:3px;padding:2px 8px;margin:0 4px;vertical-align:middle}
+input.gap::placeholder{color:#555;font-weight:700;text-align:center}
+input.gap:focus{outline:2px solid var(--blue);outline-offset:0;border-color:var(--blue)}
+table.mx{border-collapse:collapse;width:100%;font-size:calc(var(--fs) - 1px)}
+table.mx th,table.mx td{border:1px solid #dcdcdc;padding:7px 8px}
+table.mx th{background:#fafafa}
+table.mx td.c{text-align:center;width:36px;cursor:pointer}
+table.mx td.c input{width:16px;height:16px;accent-color:var(--blue);cursor:pointer;margin:0}
+table.mx tr:hover td{background:#f6f9ff}
+.legend{margin:6px 0 14px}
+.legend div{display:flex;gap:28px;margin:3px 0}
+.legend b{width:14px}
+.summary{border:1px solid var(--line);border-radius:4px;padding:16px 22px;line-height:2.3}
+.summary h4{text-align:center;margin:0 0 8px;line-height:1.4}
+.summary p{margin:0 0 10px}
+.drop{display:inline-block;min-width:130px;height:30px;line-height:28px;padding:0 10px;border:1px dashed #8a8a8a;border-radius:3px;text-align:center;font-weight:700;color:#555;vertical-align:middle;cursor:pointer;background:#fff}
+.drop.over{background:#e8f0ff;border-color:var(--blue)}
+.drop.filled{border-style:solid;border-color:#5d5d5d;color:#1d1d1d;font-weight:400}
+.drop:focus{outline:2px solid var(--blue)}
+.bank{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{display:inline-flex;gap:8px;align-items:center;border:1px solid #a9a9a9;border-radius:3px;padding:4px 12px;cursor:grab;background:#fff;user-select:none;font-size:calc(var(--fs) - 1px)}
+.chip b{color:#555}
+.chip.sel{border-color:var(--blue);background:#e8f0ff}
+.chip.used{opacity:.45}
+.tip{font-size:13px;color:#666;margin-top:8px}
+/* ===== Highlight ===== */
+mark.hl{background:#ffe866;color:inherit;padding:0;cursor:pointer}
+#hlmenu{position:fixed;z-index:50;background:#fff;border:1px solid #bbb;border-radius:4px;box-shadow:0 4px 14px rgba(0,0,0,.15);display:none;overflow:hidden}
+#hlmenu button{display:flex;align-items:center;gap:8px;width:100%;border:0;background:#fff;padding:8px 14px;font-size:13px;cursor:pointer;text-align:left}
+#hlmenu button:hover{background:#f1f5fd}
+body.hlmode .pane{cursor:text}
+/* ===== Bottom nav ===== */
+nav.bottom{height:64px;flex:none;border-top:1px solid var(--line);display:flex;align-items:center;padding:0 10px;gap:6px;background:#fff}
+.navparts{flex:1;display:flex;align-items:center;gap:6px;min-width:0;overflow-x:auto}
+.navpart{display:flex;align-items:center;gap:2px;padding:6px 10px;border-radius:4px;cursor:pointer;white-space:nowrap;border:1px solid transparent;font-size:14px}
+.navpart:hover{background:#f4f4f4}
+.navpart.cur{cursor:default;background:none;border-color:#e3e3e3}
+.navpart .lbl{font-weight:700;margin-right:8px}
+.navpart .cnt{color:#555}
+.qbtn{min-width:30px;height:30px;border:1px solid transparent;background:none;font-size:13px;cursor:pointer;border-radius:3px;position:relative;color:#1d1d1d}
+.qbtn:hover{border-color:#bbb}
+.qbtn.done{background:#eef2fb}
+.qbtn.done::after{content:'';position:absolute;left:6px;right:6px;bottom:3px;height:2px;background:#1d1d1d}
+.qbtn.cur{border-color:var(--blue);color:var(--blue);font-weight:700}
+.arrow{width:44px;height:44px;border:0;border-radius:4px;background:#1d1d1d;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.arrow:hover{background:#333}
+.arrow.sub{background:#e9e9e9;color:#1d1d1d}
+/* ===== Overlays ===== */
+.overlay{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:rgba(240,241,236,.97);padding:20px}
+.overlay.hide{display:none}
+.card{background:#fff;border:1px solid #ddd;border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,.08);padding:34px 40px;max-width:620px;width:100%}
+.card h1{margin:0 0 4px;font-size:26px}
+.card .muted{color:#666;font-size:14px}
+.card ul{padding-left:20px;line-height:1.7;font-size:15px}
+.field{margin:12px 0}
+.field label{display:block;font-weight:700;font-size:14px;margin-bottom:5px}
+.field input{width:100%;height:42px;border:1px solid #aaa;border-radius:4px;padding:0 12px;font-size:16px;font-family:inherit}
+.field input[readonly]{background:#f3f3f3}
+.big{height:48px;padding:0 26px;font-size:16px;font-weight:700;border-radius:4px;border:0;background:#1d1d1d;color:#fff;cursor:pointer;margin-top:10px}
+.big:hover{background:#333}
+.big.light{background:#eee;color:#1d1d1d}
+.err{color:var(--red);font-size:14px;min-height:18px;margin-top:8px}
+#outOv{background:rgba(120,0,15,.92)}
+#outOv .card{text-align:center;border:0}
+#outOv .msg{font-size:21px;font-weight:700;color:var(--red);line-height:1.5;margin:10px 0 18px}
+.resgrid{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;margin:14px 0}
+.resgrid div{height:34px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff}
+.resgrid .ok{background:#2e8b57}.resgrid .no{background:#c8102e}
+.score{display:flex;gap:14px;margin:16px 0}
+.score div{flex:1;border:1px solid #e3e3e3;border-radius:6px;padding:12px;text-align:center}
+.score b{display:block;font-size:28px}
+.score span{font-size:12px;color:#666;text-transform:uppercase;letter-spacing:.5px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+/* ===== Review mode ===== */
+.mk{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:8px;vertical-align:middle;color:#fff;line-height:1.5}
+.mk.ok{background:#2e8b57}.mk.no{background:#c8102e}
+body.review .q.ok{background:#eef8f1;border-left:4px solid #2e8b57}
+body.review .q.no{background:#fdeef0;border-left:4px solid #c8102e}
+body.review input.gap.ok{border:2px solid #2e8b57;background:#eef8f1;color:#1d1d1d}
+body.review input.gap.no{border:2px solid #c8102e;background:#fdeef0;color:#1d1d1d}
+body.review .drop.ok{border:2px solid #2e8b57;background:#eef8f1}
+body.review .drop.no{border:2px solid #c8102e;background:#fdeef0}
+body.review table.mx tr.ok td{background:#eef8f1}
+body.review table.mx tr.no td{background:#fdeef0}
+body.review .opt input:checked+span{font-weight:700}
+body.review input:disabled{opacity:1}
+body.review .drop,body.review .chip{pointer-events:none}
+body.review .qbtn.ok{background:#2e8b57;color:#fff}
+body.review .qbtn.no{background:#c8102e;color:#fff}
+body.review .qbtn.ok::after,body.review .qbtn.no::after{display:none}
+.revbar{display:none;align-items:center;gap:14px;font-size:13px}
+body.review .revbar{display:flex}
+.revbar i{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <div class="brand">
+      <span class="badge">READING</span>
+      <span class="ttl">Week 15. Reading Practice Test</span>
+      <span class="cand" id="candName"></span>
+    </div>
+    <div class="timer" id="timer">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg>
+      <span id="timeTxt">60 minutes left</span>
+    </div>
+    <div class="tools">
+      <button class="tbtn" id="hlBtn" title="Highlighter: bôi đen chữ để tô vàng; bấm vào chỗ đã tô để xoá">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l-5 5v4h4l5-5"/><path d="M14 4l6 6-7 7-6-6z"/></svg>Highlighter
+      </button>
+      <button class="tbtn" id="fsMinus" title="Smaller text">A−</button>
+      <button class="tbtn" id="fsPlus" title="Larger text">A+</button>
+      <button class="tbtn primary" id="submitBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5 9-10"/></svg>Submit
+      </button>
+    </div>
+  </header>
+
+  <div class="partbar"><b id="pbTitle">Part 1</b><span id="pbInstr">Read the text and answer questions 1–13.</span><div class="revbar" style="margin-top:6px"><b style="display:inline;margin:0">Xem lại bài làm:</b><span><i style="background:#2e8b57"></i>Đúng</span><span><i style="background:#c8102e"></i>Sai / bỏ trống</span><span id="revScore"></span></div></div>
+
+  <main>
+    <section class="pane" id="left"></section>
+    <div class="divider" id="divider"><div class="grip"><svg width="16" height="12" viewBox="0 0 24 16" fill="none" stroke="#444" stroke-width="2"><path d="M7 3L2 8l5 5M17 3l5 5-5 5M2 8h20"/></svg></div></div>
+    <section class="pane" id="right"></section>
+  </main>
+
+  <nav class="bottom">
+    <div class="navparts" id="navParts"></div>
+    <button class="arrow sub" id="prevBtn" title="Previous"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <button class="arrow" id="nextBtn" title="Next"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 5l7 7-7 7"/></svg></button>
+  </nav>
+</div>
+
+<div id="hlmenu">
+  <button id="mHl"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1d1d1d" stroke-width="2"><path d="M9 11l-5 5v4h4l5-5"/><path d="M14 4l6 6-7 7-6-6z"/></svg>Highlight</button>
+  <button id="mClr"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1d1d1d" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>Clear</button>
+</div>
+
+<!-- Start screen -->
+<div class="overlay" id="startOv">
+  <div class="card">
+    <h1>Week 15. Reading Practice Test</h1>
+    <div class="muted">IELTS Academic Reading · 3 passages · 40 questions · 60 minutes</div>
+    <ul>
+      <li>Bài làm mở <b>toàn màn hình</b>. Mỗi lần con thoát ra ngoài đều được ghi lại và gửi cho Thầy Độ.</li>
+      <li>Bôi đen chữ trong bài đọc để <b>highlight</b> (hoặc bật nút <b>Highlighter</b>).</li>
+      <li>Dùng thanh số câu ở dưới để chuyển giữa Part 1 – 2 – 3.</li>
+      <li>Hết 60 phút, bài tự động nộp.</li>
+    </ul>
+    <div class="field"><label for="inName">Họ và tên</label><input id="inName" autocomplete="off" placeholder="VD: Nguyễn Văn An"></div>
+    <div class="field"><label for="inClass">Lớp</label><input id="inClass" autocomplete="off" placeholder="VD: 11IE03"></div>
+    <div class="err" id="startErr"></div>
+    <button class="big" id="startBtn">Bắt đầu làm bài</button>
+  </div>
+</div>
+
+<!-- Left full screen -->
+<div class="overlay hide" id="outOv">
+  <div class="card">
+    <svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="#c8102e" stroke-width="2"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/></svg>
+    <div class="msg">Thoát màn hình ra làm gì? Tôi ghi lại hết lần anh chị out ra để cheat rồi và sẽ xử lý trước lớp.</div>
+    <div class="muted" id="outCountTxt"></div>
+    <button class="big" id="backBtn">Quay lại làm bài</button>
+  </div>
+</div>
+
+<!-- Confirm submit -->
+<div class="overlay hide" id="confOv">
+  <div class="card">
+    <h1>Nộp bài?</h1>
+    <p id="confTxt"></p>
+    <div class="row"><button class="big" id="confYes">Nộp bài</button><button class="big light" id="confNo">Làm tiếp</button></div>
+  </div>
+</div>
+
+<!-- Result -->
+<div class="overlay hide" id="resOv">
+  <div class="card" style="max-width:680px">
+    <h1>Kết quả</h1>
+    <div class="muted" id="resWho"></div>
+    <div class="score">
+      <div><b id="rScore">0/40</b><span>Correct</span></div>
+      <div><b id="rBand">0</b><span>Band (Academic)</span></div>
+      <div><b id="rParts">0 · 0 · 0</b><span>Part 1 · 2 · 3</span></div>
+    </div>
+    <div class="resgrid" id="rGrid"></div>
+    <p id="sendTxt" class="muted"></p>
+    <div class="row"><button class="big" id="reviewBtn">Xem lại bài làm</button><button class="big light" id="resendBtn">Gửi lại cho Thầy Độ</button><button class="big light" id="redoBtn">Làm lại bài</button></div>
+  </div>
+</div>
+
+<script>
+/* ================= CONFIG ================= */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxILGHPwJTRDoH232k8E-sKC6_BduCeNV-SqrGwYzYb3KwFttjYNSByu0keQYnVQsTu/exec';   // <-- dán URL Web App (…/exec) vào đây
+const TEST_ID    = 'W15_READING';
+const DURATION   = 60 * 60;                     // giây
+
+/* ================= CONTENT ================= */
+const PARTS = [
+  {p:1, from:1,  to:13, instr:'Read the text and answer questions 1–13.'},
+  {p:2, from:14, to:26, instr:'Read the text and answer questions 14–26.'},
+  {p:3, from:27, to:40, instr:'Read the text and answer questions 27–40.'}
+];
+
+const PASSAGES = [
+`<h2>The Pyramid of Cestius</h2>
+<p class="sub">A 2000-year-old pyramid in the city of Rome has been restored by archaeologists</p>
+<p>Though Rome draws tourists from around the world to its many impressive sites, one notable monument there has never attracted nearly as much interest: the Pyramid of Cestius. But why would there be a pyramid in Italy? After the Roman conquest of Egypt in 30 B.C., Egyptian architectural style became the fashion in Rome. Though obelisks and other monuments inspired by Egypt's great pyramids sprung up around the city, only two actual pyramids are known to have been built. The only one left standing, the Pyramid of Cestius, was designed as the burial pyramid for a Roman politician named Caius Cestius, who ordered that the building work be completed within a period of 330 days.</p>
+<p>Construction took place at some point between 18 B.C. and 12 B.C. Cestius' pyramid had a layer of white Carrara marble on the outside, and was constructed from brick held together by a basic kind of cement on the inside. One of the things that strikes you when you look at the pyramid is how steep it is, so that the shape of Cestius' pyramid is quite unlike that of typical Egyptian ones. This is a difference that could have been the result of inaccurate information sent back to Rome by soldiers who saw the pyramids in person in Egypt. Alternatively, Roman builders could have drawn inspiration from the pyramids in Nubia, a region located in what is today northern Sudan and southern Egypt.</p>
+<p>At the time of its construction, since there was a strict Roman law prohibiting the placement of tombs within the city itself, the Pyramid of Cestius would have stood in countryside. Rome grew enormously during the next two centuries, and, by the 3rd century A.D., the pyramid would have been surrounded by buildings. We also know that in the 3rd century A.D., the Pyramid of Cestius was hidden behind a high wall on the orders of Emperor Aurelian; this probably helped it survive throughout the centuries to come, even as other ancient monuments disappeared.</p>
+<p>By the Middle Ages, the pyramid was covered in vegetation and thick dirt, and popular myth had developed that it might be a tomb for one of the twin brothers Romulus and Remus, who were regarded as the men who had established the city of Rome. Cestius' actual tomb within the pyramid, and the inscription identifying the pyramid as his, weren't rediscovered until the 1660s when the pyramid underwent restoration. During excavations, when trees and plants were cleared away, two marble bases were found in front of the pyramid, as well as fragments of bronze statues that had once stood on them on either side of the pyramid. The people employed to excavate the pyramid did not find the urn that would have contained Cestius' remains, but they did come across a tunnel. It was quite possible, therefore, that robbers had at some earlier time removed the contents of the tomb. But while some of the features of Cestius' tomb no longer exist, at least the pyramid itself has survived.</p>
+<p>Today, the foundations of Cestius' pyramid rest below street level near an intersection with heavy traffic, so that passing tourists and residents could easily fail to notice its full height of 119 feet. Across the intersection is the Piramide station, located on Line B of the Rome Metro. In 2011, the Japanese clothing company entrepreneur Yuzo Yagi, president of Yagi Tsusho Ltd, announced his intention to help the Italian government pay for an ambitious renovation of the Pyramid of Cestius. 'It's an act of gratitude,' he later told journalists. 'Our company has grown thanks to Italy.' Work began at the site shortly after Yagi signed an official agreement with the Special Superintendency for the Archaeological Heritage of Rome, and was completed ahead of schedule thanks to his 2-million-euro contribution.</p>
+<p>As archaeologist Leonardo Guarnieri explained to journalists, officials are now conducting tours of the newly renovated pyramid twice a month by reservation. Visitors who take advantage of the tour can make their way through a narrow corridor in order to enter the burial chamber itself. It is within these walls that they can admire the frescoes: watercolour paintings typical of the time. In the chamber, it is possible to make out four frescoes of the winged Roman goddess of war, Victoria, a figure from Roman legend, as well as of a series of vases, the type that would have been used for special rituals and purification purposes. We know from the writings of earlier visitors that there used to be more here, but the majority have disappeared over time.</p>
+<p>Only one problem remains now that the restoration is complete. The white exterior of the Pyramid of Cestius will have to be cleaned every few months to remove the layer of urban pollution. A team of free-climbers will be employed to do the job, in order to avoid placing builders' scaffolding around the newly welcoming monument.</p>`,
+
+`<h2>The fascinating world of attine ants</h2>
+<p class="sub">Nicholas Wade examines leaf-cutter ants and their amazing agriculture</p>
+<p><span class="sec">A</span> Leaf-cutting ants and their fungus* 'farms' are a marvel of nature and perhaps the best-known example of symbiosis – the mutual dependence of two species. The ants cultivate a mushroom-like fungus in 'farms'. Both the ants and their so-called 'agriculture' have been extensively studied over the years, but recent research has uncovered intriguing new findings.</p>
+<p>Ants invented agriculture 50 million years before people did, and the leaf-cutters, members of the large attine ant family, practise the most sophisticated example of it. They grow their fungus in underground chambers that can reach the size of a football. A single leaf-cutter nest may contain a thousand such chambers, embedded in an underground metropolis up to 18 feet deep, and support a society of more than a million ants.</p>
+<p><span class="sec">B</span> These ant communities are the dominant plant-eaters of the Neotropics, the region comprising South and Central America, Mexico and the Caribbean. Biologists believe 15 per cent of the leaf production of tropical forests disappears down the nests of leaf-cutter ants. In the nest, the leaves are shredded and added to the fungus, which digests the leaves and is in turn eaten by the ants. The attine ants' achievement is remarkable because it allows them to consume, courtesy of their mushroom's digestive powers, the harvest of tropical forests whose leaves are laden with poisonous chemicals.</p>
+<p><span class="sec">C</span> There are more than 200 known species of attine ant, divided into 12 groups. The leaf-cutters use fresh vegetation while the other groups, known as the lower attines because their nests are smaller and their techniques more primitive, feed their gardens with similar leaves which have fallen on the ground and insects that lie on the forest floor. Lower attine ants are all a similar size. However, leaf-cutter worker ants come in made-to-fit sizes: large ants to saw off leaves, medium ones to shred them and miniature workers to seed them with fungus and clean off alien growths.</p>
+<p><span class="sec">D</span> In 1994, biologists from the United States Department of Agriculture analyzed the DNA of ant funguses. They found that the leaf-cutters' fungus was descended from a single pure strain, propagated for at least 23 million years. However, the funguses grown by lower attine ants fell into four different groups, as if the ants had domesticated wild funguses at least four times in evolutionary history. What could be driving these two patterns of fungus gardening, the pure clone cultivation of the leaf-cutters and multiple varieties of the lower attines?</p>
+<p><span class="sec">E</span> The answer has been suggested by Cameron Currie of the University of Toronto. The pure strain of fungus grown by the leaf-cutters, it seemed to him, resembled the single crops grown by humans to the exclusion of all others, such as potato growing. These 'monocultures' are very productive for a while but can succumb to disease. Monocultures, which lack the genetic diversity to respond to changing environmental threats, are particularly vulnerable to parasites, organisms which live and feed on their host, often causing harm. Currie felt there had to be a parasite in the ant-fungus system. But a century of ant research did not provide any evidence for his idea. Textbooks describe how leaf-cutter ants scrupulously weed their gardens of all foreign organisms. 'People kept telling me, the ants keep their gardens free of parasites,' said Currie. Nevertheless, after three years of sifting through attine ant gardens, Currie discovered several alien organisms, particularly a family of parasitic molds called 'Escovopsis'.</p>
+<p><span class="sec">F</span> Escovopsis is a deadly disease that can devastate a fungus garden in a couple of days. It blooms like a white cloud which envelops the whole garden. Other ants won't go near it and the ants associated with the garden just starve to death. Evidently, the ants usually manage to keep Escovopsis and other parasites under control. Nevertheless, with any lapse in control Escovopsis will quickly burst forth. Although new leaf-cutter gardens start off free of Escovopsis, within two years some 60 per cent become infected.</p>
+<p><span class="sec">G</span> The discovery of Escovopsis's role brings a new level of understanding to the evolution of the attine ants. In the last decade, evolutionary biologists have become increasingly aware of the role of parasites as driving forces in evolution. With Currie's work, there is now a possible reason for the different varieties of fungus in the lower attine mushroom gardens – to stay one step ahead of the relentless Escovopsis. Interestingly, the leaf-cutters had fewer alien molds in their gardens than the lower attines, yet more Escovopsis infections. Clearly, the price they pay for cultivating a pure variety of fungus is a higher risk from Escovopsis.</p>
+<p><span class="sec">H</span> So how do attine ants keep this parasite under control? People have known for a hundred years that ants have a whitish growth on their body surface. It was thought to be a wax but, after examining it under a microscope, Currie discovered a specialized patch on the ants' bodies that harbors a particular kind of bacterium, one well known to the pharmaceutical industry and the source of many antibiotics used in medicine. This bacterium is a potent poisoner of Escovopsis, inhibiting its growth and suppressing spore formation.</p>
+<p>Astoundingly, the leaf-cutter ants are accomplishing feats beyond the power of humans: they are growing a monocultural crop year after year without disaster, and they are using an antibiotic apparently so wisely that, unlike people, they are not provoking antibiotic resistance in the target disease-producing organism.</p>
+<p class="foot">*fungus: an organism such as a mushroom which obtains its food from decaying material.</p>`,
+
+`<h2>Linguistic Diversity</h2>
+<p>More than half of the world's languages are at risk, but an unlikely saviour is at hand. What is an endangered language? As a rough guide, any language with fewer than 10,000 speakers is in danger. However, the total number of speakers is not always a clear indication of the health of a language. In the South Andaman Islands, for example, fewer than 100 people speak Onge, but it is the primary language of those who do, and, critically, the first language of all the island's children. Consequently, it would be considered less threatened than a language such as Chipewyan in Canada, where more than 4,000 belong to the ethnic group that uses the language, but there is little use among the new generation.</p>
+<p>It could be argued that in today's globalised world, we would be better off all speaking the same language, be it Chinese, English or Spanish. It might bring us closer together, and we would certainly be more likely to make our ideas comprehensible. The majority of linguists argue, however, that when it comes to language, diversity matters.</p>
+<p>'People's understanding of themselves and their relationship with their environment are all framed in terms of concepts expressed in their own languages,' says Marcus Colchester, director of the Forest Peoples Programme. 'Many indigenous peoples derive their identities from the way they live off their land. Day-to-day activities such as hunting, fishing and farming are directly connected to the spirits and mythic beings whose stories make these people who they are'.</p>
+<p>Louisa Maffi of Terralingua, an organisation that protects cultural and biological diversity, believes linguistic diversity is of immense value to humanity as a whole. As we lose each language, we lose a repository of knowledge, values and beliefs that, in many cases, provide alternative solutions to human problems. We diminish that pool of creativity and inventiveness, and our ability to adapt to changing circumstances.</p>
+<p>Nicholas Ostler, chairman of the Foundation for Endangered Languages, points out the scientific interest in maintaining linguistic diversity. To lose diversity will mean losing awareness of the many and varied features of human language — what part of our vocal tract we use for communication, the different ways we use words to reflect meaning, and so on.</p>
+<p>Historically, colonial governments practised policies of compelling minority cultures to speak the majority language. But even where there was little or no forced assimilation, imperialism still took its toll. Ostler cites the example of the ancient Roman Empire, which had no specific policy of forcing subjects to speak Latin, but still greatly reduced linguistic diversity across Europe. There was some prestige associated with the language; it was the medium of trade and administration—and people who wanted to get on in life tended to learn it. And similar processes are threatening minority languages today, says Ostler. The Romans succeeded in making people live in larger communities, what we now call urbanisation. And nowadays people move from the countryside to cities where regional languages aren't maintained. The new generation grows up with their lives focused on the wider community. It may take several generations for the traditional language to fall out of use completely.</p>
+<p>'Many nation states see cultural diversity as a threat to national unity,' says Maffi. 'So monolingualism is promoted in specific contexts, particularly schools, where there's no multilingual education offered, and in government, where politics is only conducted in the national language'. Such implicit endorsement of monolingualism conspires to place pressure on minority peoples to assimilate. There is essentially a misconceived 'either/or' ideology: either you maintain your mother tongue, in which case you can't participate in national life, or you forget your mother tongue and learn the majority language.</p>
+<p>In recent decades, the mass media have reinforced this process further and extended the penetration of metropolitan languages like English and Spanish beyond urban centres into smaller communities. The pervasive influence of the media has effectively created a cultural divide between the generations, Ostler continues, where young people speak their traditional language with their elders, but English among themselves. Maffi describes similar trends among indigenous minority groups worldwide. All of the images children see in the media are of the glamorous lifestyle of the majority, and that lifestyle is communicated in the majority language. So it becomes very difficult for them to find a reason to value their own language.</p>
+<p>When the internet first took off during the mid-1990s, many feared it represented the end of the road for endangered languages. Because it was only available to English-speakers, it would only serve to continue the decline. However, these fears proved to be unfounded, as the diversity of languages on the web increased rapidly in the years that followed. Peter Austin, of London's School of Oriental and African Studies, attributes this to the lack of control on the internet. 'Unlike most TV or radio, the web isn't in the hands of big media corporations. All you need is an internet account and a little technology, and you can produce information, news, videos, and so on, as much as you want'. Minority groups around the world can document their language in written, audio and visual format. And, crucially, it is in a form which appeals to young people. It seems that the mass media could, after all, be the salvation of the world's most threatened languages.</p>`
+];
+
+/* ---------- question builders ---------- */
+const L4 = ['A','B','C','D'];
+function tf(n, text, opts){
+  return `<div class="q" id="q${n}" data-q="${n}"><p class="stem"><b>${n}</b>${text}</p>` +
+    opts.map(o=>`<label class="opt"><input type="radio" name="a${n}" value="${o.toUpperCase()}"><span>${o}</span></label>`).join('') + `</div>`;
+}
+function mcq(n, stem, opts){
+  return `<div class="q" id="q${n}" data-q="${n}"><p class="stem"><b>${n}</b>${stem}</p>` +
+    opts.map((o,i)=>`<label class="opt"><input type="radio" name="a${n}" value="${L4[i]}"><span><b>${L4[i]}</b>${o}</span></label>`).join('') + `</div>`;
+}
+function gap(n){ return `<input class="gap" id="q${n}" data-q="${n}" placeholder="${n}" autocomplete="off" spellcheck="false" autocapitalize="off" autocorrect="off">`; }
+function drop(n){ return `<span class="drop" id="q${n}" data-q="${n}" tabindex="0">${n}</span>`; }
+function matrix(rows, cols){
+  return `<table class="mx"><thead><tr><th style="text-align:left">Question</th>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>` +
+    rows.map(([n,t])=>`<tr id="q${n}" data-q="${n}"><td><b>${n}</b>&nbsp; ${t}</td>${cols.map(c=>`<td class="c"><input type="radio" name="a${n}" value="${c}" aria-label="${n} ${c}"></td>`).join('')}</tr>`).join('') +
+    `</tbody></table>`;
+}
+const TFNG = ['True','False','Not Given'];
+const YNNG = ['Yes','No','Not Given'];
+const BANK = {A:'ideas',B:'speakers',C:'connections',D:'surroundings',E:'families',F:'occupations',G:'relationship',H:'words',I:'misunderstanding'};
+
+const QUESTIONS = [
+/* ----- PART 1 ----- */
+`<div class="qset">
+<h3>Questions 1–7</h3>
+<p class="ins">Do the following statements agree with the information given in Reading Passage 1?</p>
+<p class="ins ins-i">In boxes 1–7 on your answer sheet, write</p>
+<table class="keytbl"><tr><td>TRUE</td><td>if the statement agrees with the information</td></tr><tr><td>FALSE</td><td>if the statement contradicts the information</td></tr><tr><td>NOT GIVEN</td><td>if there is no information on this</td></tr></table>
+${tf(1,"The Pyramid of Cestius has always been one of Rome's most popular tourist attractions.",TFNG)}
+${tf(2,"The construction of the Pyramid was completed before Cestius' death.",TFNG)}
+${tf(3,"In the Middle Ages, people thought an original founder of Rome was buried in the Pyramid of Cestius.",TFNG)}
+${tf(4,"Today the height of the Pyramid is something that tourists and residents immediately notice.",TFNG)}
+${tf(5,"Japanese businessman Yuzo Yagi was an admirer of both Italian and Egyptian architecture.",TFNG)}
+${tf(6,"The restoration of the Pyramid of Cestius, which was funded by Yuzo Yagi, finished earlier than expected.",TFNG)}
+${tf(7,"Most of the original frescoes inside Cestius' tomb have survived to this day.",TFNG)}
+</div>
+<div class="qset">
+<h3>Questions 8–13</h3>
+<p class="ins">Complete the notes below.</p>
+<p class="ins">Choose <b>ONE WORD AND/OR A NUMBER</b> from the passage for each answer.</p>
+<div class="notes">
+<h4>History of the Pyramid of Cestius</h4>
+<h5>Construction of Cestius' pyramid</h5>
+<ul>
+<li>it was made from ${gap(8)}, marble and cement</li>
+<li>its ${gap(9)} is different to the pyramids found in Egypt</li>
+<li>it was originally built in the ${gap(10)} as building tombs in the city was forbidden</li>
+<li>Emperor Aurelian ordered that a wall had to be built around it</li>
+</ul>
+<h5>Restoration of Cestius' pyramid in the 1660s</h5>
+<ul>
+<li>in the 1660s, some broken ${gap(11)} were found next to it</li>
+<li>the ${gap(12)} inside the tomb suggests that robbers had been there</li>
+<li>the frescoes show mythological scenes, and images of vases</li>
+</ul>
+<h5>Restoration of Cestius' pyramid today</h5>
+<ul>
+<li>a Japanese businessman paid for its restoration</li>
+<li>climbers are helping to get rid of signs of ${gap(13)}</li>
+</ul>
+</div>
+</div>`,
+
+/* ----- PART 2 ----- */
+`<div class="qset">
+<h3>Questions 14–19</h3>
+<p class="ins">Reading Passage 2 has eight sections, <b>A–H</b>.</p>
+<p class="ins">Which section contains the following information?</p>
+<p class="ins ins-i">Choose the correct letter, <b>A–H</b>.</p>
+${matrix([[14,'two things at which leaf-cutter ants have succeeded but humans have failed'],[15,'a comparison between the nests of leaf-cutter and lower attine ants'],[16,'an assessment of the impact leaf-cutter ants have on their environment'],[17,'the effect Escovopsis has on ant communities'],[18,'the advantage for lower attine ants of growing a range of funguses'],[19,'the discovery of the age of the attine ant funguses']],['A','B','C','D','E','F','G','H'])}
+</div>
+<div class="qset">
+<h3>Questions 20–24</h3>
+<p class="ins">Classify the following features as belonging to</p>
+<div class="legend"><div><b>A</b><span>leaf-cutter ants</span></div><div><b>B</b><span>lower attine ants</span></div><div><b>C</b><span>both leaf-cutter and lower attine ants</span></div></div>
+<p class="ins ins-i">Choose the correct letter, <b>A</b>, <b>B</b> or <b>C</b>.</p>
+<p class="ins"><b>NB</b>&nbsp; You may use any letter more than once.</p>
+${matrix([[20,'the use of dead vegetation to cultivate their fungus'],[21,'very small ants that keep the fungus free of foreign organisms'],[22,'the ability to safely eat harmful plants'],[23,'the cultivation of a single fungus'],[24,'a nest with a very large number of rooms for growing fungus']],['A','B','C'])}
+</div>
+<div class="qset">
+<h3>Questions 25–26</h3>
+<p class="ins">Choose the correct letter, <b>A, B, C</b> or <b>D</b>.</p>
+${mcq(25,"What does the writer say about Cameron Currie's research?",['No previous work had been done in this area.','Earlier studies did not support his theory.','Textbooks on this subject lacked specific detail.',"Currie's initial theory had proven to be incorrect."])}
+${mcq(26,"Using a microscope, Currie was the first to discover that the body of attine ants",['has a white covering.','is covered in wax.','is poisonous to humans.','has a substance useful to humans.'])}
+</div>`,
+
+/* ----- PART 3 ----- */
+`<div class="qset">
+<h3>Questions 27–31</h3>
+<p class="ins">Do the following statements agree with the claims of the writer in Reading Passage 3?</p>
+<p class="ins ins-i">In boxes 27–31 on your answer sheet, write</p>
+<table class="keytbl"><tr><td>YES</td><td>if the statement agrees with the claims of the writer</td></tr><tr><td>NO</td><td>if the statement contradicts the claims of the writer</td></tr><tr><td>NOT GIVEN</td><td>if it is impossible to say what the writer thinks about this</td></tr></table>
+${tf(27,'The Onge language has a particularly poor chance of survival.',YNNG)}
+${tf(28,'Most linguists oppose the idea of a single global language.',YNNG)}
+${tf(29,'Many citizens of the Roman Empire chose to become Latin speakers.',YNNG)}
+${tf(30,'Majority languages such as Spanish and English are now spreading faster within smaller communities than larger ones.',YNNG)}
+${tf(31,'There is a greater proportion of English used on the internet nowadays than in the 1990s.',YNNG)}
+</div>
+<div class="qset">
+<h3>Questions 32–35</h3>
+<p class="ins">Complete the summary using the list of words, <b>A–I</b>, below.</p>
+<p class="ins ins-i">Drag the correct word into each gap (or click a word, then click a gap).</p>
+<div class="summary">
+<h4>Disappearing languages in today's globalised world</h4>
+<p>If everybody spoke the same language, whether Spanish, English or Chinese, there would certainly be less chance of ${drop(32)} between people. But would society suffer if there were one global language? Experts agree that it would.</p>
+<p>According to Marcus Colchester, people's use of native languages is key to how they relate to their ${drop(33)}. He also emphasises the link between indigenous people's traditional ${drop(34)} and the recounting of the myths and folk tales which are integral to their sense of identity.</p>
+<p>Louisa Maffi describes how loss of language diversity leads to a loss of collective human knowledge, so there could be fewer ${drop(35)} generated to help solve problems in the world.</p>
+</div>
+<div class="bank" id="bank">${Object.entries(BANK).map(([k,v])=>`<span class="chip" draggable="true" data-v="${k}"><b>${k}</b>${v}</span>`).join('')}</div>
+<p class="tip">Bấm vào ô đã điền (khi chưa chọn từ nào) để xoá.</p>
+</div>
+<div class="qset">
+<h3>Questions 36–40</h3>
+<p class="ins">Choose the correct letter, <b>A, B, C</b> or <b>D</b>.</p>
+${mcq(36,'In the first paragraph, the writer mentions two particular languages in order to indicate',['a key factor in determining how endangered a language is.','alternative methods of interpreting data about languages at risk.','different reasons why a minority language might be under threat.',"difficulties involved in assessing a language's survival prospects."])}
+${mcq(37,'What similarity between the Roman Empire and the present day does Nicholas Ostler mention?',['the growth of international trade','the shift towards living in more extended social groups','the attitude of governments towards minority languages','the speed with which minority languages fall out of use'])}
+${mcq(38,'According to Louisa Maffi, many people wrongly believe that',['it is more difficult for minority-language speakers to access education.','majority-language speakers can participate better in national life.','their national government is opposed to the use of minority languages.','they need to choose between being a minority-or-majority-language speaker.'])}
+${mcq(39,'What problem among minority-language speakers is mentioned in the eighth paragraph?',["younger people's perceptions of their mother tongue",'breakdown of communication between the generations',"older people's attitudes to their children's language use",'generational differences in ability to access the mass media'])}
+${mcq(40,'What does Peter Austin see as the main advantage of the internet for minority language groups?',['the variety of media it can use','the freedom its users can have','the wide geographical area it can reach','the range of people it can be accessed by'])}
+</div>`
+];
+
+/* ================= KEY (encoded) ================= */
+const _K = '=0XXiIkIbBiOiADNiACLdJSQisFI6ISOzICIs0lIEJyWgojI4MjIgwSXiIkIbBiOiczMiACLdJSQisFI6IiNzICIs0lIBJyWgojI1MjIgwSXiYkIbBiOiQzMiACLdJCRisFI6IyMzICIs0lIJJyWgojIyMjIgwSXi4URWl0RgQ1TOJyWgojIxMjIgwSXi4URWl0RgQ1TOJyWgojIwMjIgwSXiMVRZJyWgojI5IjIgwSXiMVRZJyWgojI4IjIgwSXi8kTisFI6IyNyICIs0lIEJyWgojI2IjIgwSXiIkIbBiOiUjMiACLdJSQisFI6ICNyICIs0lIBJyWgojIzIjIgwSXiMkIbBiOiIjMiACLdJSQisFI6ISMyICIs0lICJyWgojIwIjIgwSXiQkIbBiOikTMiACLdJyRisFI6ICOxICIs0lIGJyWgojI3EjIgwSXiIkIbBiOiYTMiACLdJyQisFI6ISNxICIs0lIIJyWgojI0EjIgwSXi42bpRXdsx2bwJyWgojIzEjIgwSXiwWZu5Wd0JyWgojIyEjIgwSXiUWd0FGdzJCIsIyclVHdhR3cisFI6ISMxICIs0lIlRWazlnc05WdvNmIbBiOiATMiACLdJSZwFGazJyWgojI5ICIs0lIzt2YpJnYiACLis2YpJnYisFI6ICOiACLdJSRTxUQGJyWgojI3ICIs0lIFVlUUJyWgojI2ICIs0lIOVkVJdEIU9kTisFI6ISNiACLdJSRTxUQGJyWgojI0ICIs0lIFVlUUJyWgojIzICIs0lIOVkVJdEIU9kTisFI6IiMiACLdJSRTxUQGJyWgojIxIye';
+const KEY = JSON.parse(atob(_K.split('').reverse().join('')));
+
+/* ================= STATE ================= */
+const SKEY = 'ielts_' + TEST_ID;
+let S = load() || {answers:{}, outCount:0, outLog:[], submitted:false};
+let REVIEW = false;
+let curPart = 1, curQ = 1, hlMode = false, selChip = null, savedRange = null, menuMark = null;
+const scrollMem = {1:[0,0],2:[0,0],3:[0,0]};
+function load(){ try{ return JSON.parse(localStorage.getItem(SKEY)); }catch(e){ return null; } }
+function save(){ try{ localStorage.setItem(SKEY, JSON.stringify(S)); }catch(e){} }
+const $ = id => document.getElementById(id);
+const partOf = n => n<=13 ? 1 : n<=26 ? 2 : 3;
+
+/* ================= SCORM 1.2 (optional) ================= */
+let API = null;
+function findAPI(w){ let i=0; while(w && i<12){ try{ if(w.API) return w.API; }catch(e){} if(w===w.parent) break; w=w.parent; i++; } return null; }
+try{ API = findAPI(window) || (window.opener ? findAPI(window.opener) : null); if(API) API.LMSInitialize(''); }catch(e){ API=null; }
+function scormGet(k){ try{ return API ? API.LMSGetValue(k) : ''; }catch(e){ return ''; } }
+function scormSet(k,v){ try{ if(API) API.LMSSetValue(k,String(v)); }catch(e){} }
+window.addEventListener('beforeunload', ()=>{ try{ if(API){ API.LMSCommit(''); API.LMSFinish(''); } }catch(e){} });
+
+/* ================= RENDER ================= */
+function render(){
+  $('left').innerHTML  = PASSAGES.map((h,i)=>`<div class="part-block passage" data-part="${i+1}">${h}</div>`).join('');
+  $('right').innerHTML = QUESTIONS.map((h,i)=>`<div class="part-block" data-part="${i+1}">${h}</div>`).join('');
+  restoreAnswers();
+  showPart(1);
+}
+function restoreAnswers(){
+  for(const [n,v] of Object.entries(S.answers)){
+    const el = $('q'+n);
+    if(!el || v==='') continue;
+    if(el.classList.contains('gap')) el.value = v;
+    else if(el.classList.contains('drop')) fillDrop(+n, v, true);
+    else { const r = document.querySelector(`input[name="a${n}"][value="${v}"]`); if(r) r.checked = true; }
+  }
+}
+function showPart(p){
+  scrollMem[curPart] = [$('left').scrollTop, $('right').scrollTop];
+  curPart = p;
+  document.querySelectorAll('.part-block').forEach(b=>b.classList.toggle('show', +b.dataset.part===p));
+  $('pbTitle').textContent = 'Part ' + p;
+  $('pbInstr').textContent = PARTS[p-1].instr;
+  $('left').scrollTop = scrollMem[p][0]; $('right').scrollTop = scrollMem[p][1];
+  hideMenu();
+  buildNav();
+}
+function answered(n){ const v = S.answers[n]; return v!==undefined && String(v).trim()!==''; }
+function buildNav(){
+  $('navParts').innerHTML = PARTS.map(P=>{
+    if(P.p===curPart){
+      let b=''; for(let n=P.from;n<=P.to;n++) b += `<button class="qbtn${answered(n)?' done':''}${n===curQ?' cur':''}${REVIEW?(isRight(n)?' ok':' no'):''}" data-go="${n}">${n}</button>`;
+      return `<div class="navpart cur"><span class="lbl">Part ${P.p}</span>${b}</div>`;
+    }
+    let c=0; for(let n=P.from;n<=P.to;n++) if(answered(n)) c++;
+    if(REVIEW){ c=0; for(let n=P.from;n<=P.to;n++) if(isRight(n)) c++; }
+    return `<div class="navpart" data-part="${P.p}"><span class="lbl">Part ${P.p}</span><span class="cnt">${c} of ${P.to-P.from+1}${REVIEW?' đúng':''}</span></div>`;
+  }).join('');
+}
+$('navParts').addEventListener('click', e=>{
+  const b = e.target.closest('[data-go]'); if(b){ goQ(+b.dataset.go); return; }
+  const p = e.target.closest('.navpart[data-part]'); if(p){ goQ(PARTS[+p.dataset.part-1].from); }
+});
+function goQ(n){
+  n = Math.max(1, Math.min(40, n));
+  curQ = n;
+  const p = partOf(n); if(p!==curPart) showPart(p); else buildNav();
+  const el = $('q'+n); if(!el) return;
+  el.scrollIntoView({block:'center', behavior:'smooth'});
+  const box = el.closest('.q') || el;
+  box.classList.add('flash'); setTimeout(()=>box.classList.remove('flash'), 900);
+  if(el.classList.contains('gap')) el.focus({preventScroll:true});
+}
+$('prevBtn').onclick = ()=>goQ(curQ-1);
+$('nextBtn').onclick = ()=>goQ(curQ+1);
+
+/* ---------- answer capture ---------- */
+function setAns(n, v){ S.answers[n] = v; save(); curQ = n; buildNav(); }
+$('right').addEventListener('change', e=>{
+  const t = e.target;
+  if(t.type==='radio' && t.name.startsWith('a')) setAns(+t.name.slice(1), t.value);
+});
+$('right').addEventListener('input', e=>{
+  if(e.target.classList.contains('gap')) setAns(+e.target.dataset.q, e.target.value);
+});
+$('right').addEventListener('focusin', e=>{
+  const q = e.target.closest('[data-q]'); if(q){ curQ = +q.dataset.q; buildNav(); }
+});
+$('right').addEventListener('click', e=>{
+  const td = e.target.closest('td.c'); if(td && e.target.tagName!=='INPUT'){ const r = td.querySelector('input'); r.checked = true; r.dispatchEvent(new Event('change',{bubbles:true})); }
+  const q = e.target.closest('[data-q]'); if(q){ curQ = +q.dataset.q; buildNav(); }
+});
+
+/* ---------- drag & drop summary ---------- */
+function fillDrop(n, v, silent){
+  const d = $('q'+n);
+  if(v){ d.textContent = BANK[v]; d.classList.add('filled'); d.dataset.v = v; }
+  else { d.textContent = n; d.classList.remove('filled'); delete d.dataset.v; }
+  if(!silent) setAns(n, v||'');
+  markUsed();
+}
+function markUsed(){
+  const used = [32,33,34,35].map(n=>S.answers[n]).filter(Boolean);
+  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('used', used.includes(c.dataset.v)));
+}
+document.addEventListener('dragstart', e=>{ const c = e.target.closest && e.target.closest('.chip'); if(c){ e.dataTransfer.setData('text/plain', c.dataset.v); } });
+document.addEventListener('dragover', e=>{ const d = e.target.closest && e.target.closest('.drop'); if(d){ e.preventDefault(); d.classList.add('over'); } });
+document.addEventListener('dragleave', e=>{ const d = e.target.closest && e.target.closest('.drop'); if(d) d.classList.remove('over'); });
+document.addEventListener('drop', e=>{
+  const d = e.target.closest && e.target.closest('.drop'); if(!d) return;
+  e.preventDefault(); d.classList.remove('over');
+  const v = e.dataTransfer.getData('text/plain'); if(BANK[v]) fillDrop(+d.dataset.q, v);
+});
+document.addEventListener('click', e=>{
+  const c = e.target.closest('.chip');
+  if(c){ selChip = (selChip===c.dataset.v) ? null : c.dataset.v; document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('sel', x.dataset.v===selChip)); return; }
+  const d = e.target.closest('.drop');
+  if(d){
+    if(selChip){ fillDrop(+d.dataset.q, selChip); selChip = null; document.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel')); }
+    else if(d.dataset.v){ fillDrop(+d.dataset.q, ''); }
+  }
+});
+
+/* ================= HIGHLIGHTER ================= */
+function highlightRange(range){
+  const rootNode = range.commonAncestorContainer;
+  const root = rootNode.nodeType===3 ? rootNode.parentNode : rootNode;
+  const nodes = [];
+  if(rootNode.nodeType===3) nodes.push(rootNode);
+  else { const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {acceptNode:n=>range.intersectsNode(n)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT}); while(w.nextNode()) nodes.push(w.currentNode); }
+  const jobs = nodes.map(node=>{
+    let s = 0, e = node.length;
+    if(node===range.startContainer) s = range.startOffset;
+    if(node===range.endContainer) e = range.endOffset;
+    return {node, s, e};
+  });
+  jobs.forEach(({node,s,e})=>{
+    if(s>=e || !node.data.slice(s,e).trim()) return;
+    if(node.parentNode.closest('mark.hl, input, button, .drop, .chip')) return;
+    let t = node;
+    if(s>0){ t = node.splitText(s); e -= s; }
+    if(e < t.length) t.splitText(e);
+    const m = document.createElement('mark'); m.className = 'hl';
+    t.parentNode.insertBefore(m, t); m.appendChild(t);
+  });
+}
+function unwrap(m){ const p = m.parentNode; while(m.firstChild) p.insertBefore(m.firstChild, m); p.removeChild(m); p.normalize(); }
+function showMenu(x, y, canHl, canClr){
+  const mn = $('hlmenu'); $('mHl').style.display = canHl?'flex':'none'; $('mClr').style.display = canClr?'flex':'none';
+  mn.style.display = 'block'; mn.style.left = Math.min(x, innerWidth-140)+'px'; mn.style.top = Math.min(y+10, innerHeight-90)+'px';
+}
+function hideMenu(){ $('hlmenu').style.display = 'none'; savedRange = null; menuMark = null; }
+$('hlmenu').addEventListener('mousedown', e=>e.preventDefault());
+$('mHl').onclick = ()=>{ if(savedRange) highlightRange(savedRange); getSelection().removeAllRanges(); hideMenu(); };
+$('mClr').onclick = ()=>{ if(menuMark) unwrap(menuMark); hideMenu(); };
+document.addEventListener('mouseup', e=>{
+  if(e.target.closest('#hlmenu')) return;
+  const mk = e.target.closest('mark.hl');
+  setTimeout(()=>{
+    const sel = getSelection();
+    if(!sel.rangeCount || sel.isCollapsed){
+      if(mk){ if(hlMode) { unwrap(mk); hideMenu(); } else { menuMark = mk; showMenu(e.clientX, e.clientY, false, true); } }
+      else hideMenu();
+      return;
+    }
+    const r = sel.getRangeAt(0);
+    const anc = r.commonAncestorContainer.nodeType===1 ? r.commonAncestorContainer : r.commonAncestorContainer.parentNode;
+    if(!anc.closest('.pane')){ hideMenu(); return; }
+    if(hlMode){ highlightRange(r); sel.removeAllRanges(); hideMenu(); }
+    else { savedRange = r.cloneRange(); showMenu(e.clientX, e.clientY, true, false); }
+  }, 0);
+});
+$('hlBtn').onclick = ()=>{ hlMode = !hlMode; $('hlBtn').classList.toggle('on', hlMode); document.body.classList.toggle('hlmode', hlMode); };
+$('left').addEventListener('scroll', hideMenu); $('right').addEventListener('scroll', hideMenu);
+/* chặn copy bài đọc để tra mạng */
+['copy','cut','contextmenu'].forEach(ev=>document.addEventListener(ev, e=>{ if(e.target.closest && e.target.closest('.pane') && !(e.target.tagName==='INPUT')) e.preventDefault(); }));
+
+/* ---------- text size & divider ---------- */
+let fs = 15;
+$('fsPlus').onclick = ()=>{ fs = Math.min(22, fs+1); document.documentElement.style.setProperty('--fs', fs+'px'); };
+$('fsMinus').onclick = ()=>{ fs = Math.max(12, fs-1); document.documentElement.style.setProperty('--fs', fs+'px'); };
+(function(){
+  const dv = $('divider'), left = $('left'), main = document.querySelector('main'); let drag = false;
+  dv.addEventListener('pointerdown', e=>{ drag = true; dv.setPointerCapture(e.pointerId); });
+  dv.addEventListener('pointermove', e=>{ if(!drag) return; const r = main.getBoundingClientRect(); const pct = Math.max(25, Math.min(75, (e.clientX - r.left)/r.width*100)); left.style.width = pct+'%'; });
+  dv.addEventListener('pointerup', ()=>drag = false);
+})();
+
+/* ================= TIMER ================= */
+let tick = null;
+function startTimer(){
+  clearInterval(tick);
+  const upd = ()=>{
+    const rem = Math.max(0, Math.round((S.end - Date.now())/1000));
+    const t = $('timeTxt');
+    if(rem > 60) t.textContent = Math.ceil(rem/60) + ' minutes left';
+    else t.textContent = rem + ' seconds left';
+    $('timer').classList.toggle('warn', rem <= 600);
+    if(rem <= 0 && !S.submitted){ clearInterval(tick); doSubmit(true); }
+  };
+  upd(); tick = setInterval(upd, 1000);
+}
+
+/* ================= FULL SCREEN GUARD ================= */
+const isFS = ()=> !!(document.fullscreenElement || document.webkitFullscreenElement);
+function enterFS(){
+  const el = document.documentElement;
+  try{ (el.requestFullscreen || el.webkitRequestFullscreen).call(el).catch(()=>{}); }catch(e){}
+  try{ localStorage.setItem('ielts_fullscreen','1'); }catch(e){}
+}
+function logOut(type){
+  if(!S.started || S.submitted) return;
+  S.outCount++; S.outLog.push({type, at:new Date().toLocaleTimeString('vi-VN')}); save();
+  $('outCountTxt').textContent = 'Số lần con đã thoát ra: ' + S.outCount;
+  $('outOv').classList.remove('hide');
+}
+let fsWas = false;
+function onFsChange(){
+  if(isFS()){ fsWas = true; return; }
+  if(fsWas){ fsWas = false; logOut('Thoát toàn màn hình'); }
+}
+document.addEventListener('fullscreenchange', onFsChange);
+document.addEventListener('webkitfullscreenchange', onFsChange);
+document.addEventListener('visibilitychange', ()=>{ if(document.hidden) logOut('Chuyển tab / cửa sổ'); });
+$('backBtn').onclick = ()=>{ $('outOv').classList.add('hide'); enterFS(); };
+
+/* ================= START ================= */
+(function initStart(){
+  const sName = scormGet('cmi.core.student_name');
+  if(sName){ $('inName').value = sName; $('inName').readOnly = true; }
+  if(S.name && !sName) $('inName').value = S.name;
+  if(S.cls) $('inClass').value = S.cls;
+  if(S.started && !S.submitted){ $('startBtn').textContent = 'Tiếp tục làm bài'; }
+  if(S.submitted){ $('startOv').classList.add('hide'); showResult(); }
+})();
+$('startBtn').onclick = ()=>{
+  const name = $('inName').value.trim(), cls = $('inClass').value.trim();
+  if(name.length < 3){ $('startErr').textContent = 'Con nhập đầy đủ họ và tên nhé.'; return; }
+  if(!cls){ $('startErr').textContent = 'Con nhập lớp nhé.'; return; }
+  S.name = name; S.cls = cls; S.scormId = scormGet('cmi.core.student_id') || '';
+  if(!S.started){ S.started = true; S.start = Date.now(); S.end = S.start + DURATION*1000; }
+  save();
+  $('candName').textContent = '· ' + name + ' · ' + cls;
+  $('startOv').classList.add('hide');
+  enterFS();
+  startTimer();
+};
+
+/* ================= SUBMIT ================= */
+const norm = s => String(s||'').toLowerCase().replace(/[’']/g,"'").replace(/\s+/g,' ').trim();
+function isRight(n){ const k = KEY[n]; const a = norm(S.answers[n]); return a!=='' && k.some(x=>norm(x)===a); }
+function band(s){ const t=[[39,9],[37,8.5],[35,8],[33,7.5],[30,7],[27,6.5],[23,6],[19,5.5],[15,5],[13,4.5],[10,4],[8,3.5],[6,3],[4,2.5],[2,2],[1,1]]; for(const [m,b] of t) if(s>=m) return b; return 0; }
+function grade(){
+  const right = []; let p=[0,0,0];
+  for(let n=1;n<=40;n++){ const ok = isRight(n); right.push(ok); if(ok) p[partOf(n)-1]++; }
+  const total = p[0]+p[1]+p[2];
+  return {total, parts:p, band:band(total), right};
+}
+$('submitBtn').onclick = ()=>{
+  let miss = 0; for(let n=1;n<=40;n++) if(!answered(n)) miss++;
+  $('confTxt').textContent = miss ? `Con còn ${miss} câu chưa làm. Nộp rồi thì không sửa được nữa.` : 'Con đã làm đủ 40 câu. Nộp rồi thì không sửa được nữa.';
+  $('confOv').classList.remove('hide');
+};
+$('confNo').onclick = ()=>$('confOv').classList.add('hide');
+$('confYes').onclick = ()=>{ $('confOv').classList.add('hide'); doSubmit(false); };
+
+function doSubmit(auto){
+  if(S.submitted) return;
+  S.submitted = true; S.submitAt = Date.now(); S.auto = auto;
+  S.result = grade(); save();
+  clearInterval(tick);
+  try{ if(isFS()) (document.exitFullscreen || document.webkitExitFullscreen).call(document); }catch(e){}
+  // SCORM
+  scormSet('cmi.core.score.min', 0); scormSet('cmi.core.score.max', 100);
+  scormSet('cmi.core.score.raw', Math.round(S.result.total/40*100));
+  scormSet('cmi.core.lesson_status', 'completed');
+  try{ if(API) API.LMSCommit(''); }catch(e){}
+  showResult();
+  send();
+}
+function payload(){
+  return {
+    testId: TEST_ID, name: S.name, className: S.cls, scormId: S.scormId || '',
+    startedAt: new Date(S.start).toISOString(), submittedAt: new Date(S.submitAt).toISOString(),
+    durationSec: Math.round((S.submitAt - S.start)/1000), autoSubmit: !!S.auto,
+    outCount: S.outCount, outLog: S.outLog, answers: S.answers,
+    clientScore: S.result.total
+  };
+}
+function send(){
+  $('sendTxt').textContent = 'Đang gửi bài cho Thầy Độ…';
+  if(!/^https:\/\/script\.google\.com/.test(SCRIPT_URL)){ $('sendTxt').textContent = 'Chưa cài URL Apps Script nên bài chưa được gửi.'; return; }
+  fetch(SCRIPT_URL, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload())})
+    .then(()=>{ S.sent = true; save(); $('sendTxt').textContent = 'Bài làm của con đã được gửi cho Thầy Độ.'; })
+    .catch(()=>{ $('sendTxt').textContent = 'Chưa gửi được (mất mạng?). Con bấm "Gửi lại cho Thầy Độ" nhé.'; });
+}
+function showResult(){
+  const r = S.result || grade();
+  $('resWho').textContent = (S.name||'') + (S.cls ? ' · ' + S.cls : '');
+  $('rScore').textContent = r.total + '/40';
+  $('rBand').textContent = r.band.toFixed(1);
+  $('rParts').textContent = r.parts.join(' · ');
+  $('rGrid').innerHTML = r.right.map((ok,i)=>`<div class="${ok?'ok':'no'}">${i+1}</div>`).join('');
+  if(S.sent) $('sendTxt').textContent = 'Bài làm của con đã được gửi cho Thầy Độ.';
+  $('resOv').classList.remove('hide');
+}
+$('resendBtn').onclick = send;
+$('reviewBtn').onclick = enterReview;
+function enterReview(){
+  $('resOv').classList.add('hide');
+  if(REVIEW) return;
+  REVIEW = true;
+  document.body.classList.add('review');
+  hlMode = false; $('hlBtn').classList.remove('on'); document.body.classList.remove('hlmode');
+  document.querySelectorAll('#right input').forEach(i=>i.disabled = true);
+  const r = S.result || grade();
+  $('revScore').textContent = '· ' + r.total + '/40 · Band ' + r.band.toFixed(1);
+  $('timeTxt').textContent = 'Đã nộp bài';
+  $('timer').classList.remove('warn');
+  $('submitBtn').innerHTML = 'Kết quả';
+  $('submitBtn').onclick = ()=>$('resOv').classList.remove('hide');
+  for(let n=1;n<=40;n++){
+    const ok = isRight(n), el = $('q'+n); if(!el) continue;
+    const cls = ok ? 'ok' : 'no';
+    const badge = `<span class="mk ${cls}">${ok?'Đúng':(answered(n)?'Sai':'Bỏ trống')}</span>`;
+    if(el.classList.contains('q')){ el.classList.add(cls); el.querySelector('.stem').insertAdjacentHTML('beforeend', badge); }
+    else if(el.tagName==='TR'){ el.classList.add(cls); el.cells[0].insertAdjacentHTML('beforeend', badge); }
+    else { el.classList.add(cls); el.insertAdjacentHTML('afterend', badge); if(el.classList.contains('gap') && !answered(n)) el.placeholder = n + ' (trống)'; }
+  }
+  const bank = $('bank'); if(bank) bank.style.opacity = .5;
+  showPart(1); goQ(1);
+}
+$('redoBtn').onclick = ()=>{
+  if(!confirm('Làm lại từ đầu? Bài đã nộp vẫn được lưu bên Thầy Độ.')) return;
+  const keep = {name:S.name, cls:S.cls};
+  S = Object.assign({answers:{}, outCount:0, outLog:[], submitted:false}, keep); save(); location.reload();
+};
+
+/* ================= GO ================= */
+render();
+markUsed();
+if(S.started && !S.submitted){ $('candName').textContent = '· ' + (S.name||'') + ' · ' + (S.cls||''); }
+</script>
+</body>
+</html>
